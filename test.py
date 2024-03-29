@@ -312,12 +312,12 @@ def text2excel(person_info_dict_list, data_matrix_list, test_data_info_list, dat
     # 填充数据曲线图到excel表格
     last_column = total_columns - 1  # 最后一列
     for i, data_curve_img_cropped in enumerate(data_curve_img_cropped_list):
-        excel_image = ExcelImage('./temp_img/data_curve_1_cropped.png')
-        sheet.column_dimensions[get_column_letter(sheet.max_column)].width = 36
+        excel_image = ExcelImage(f'./temp_img/data_curve_{i+1}_cropped.png')
+        sheet.column_dimensions[get_column_letter(sheet.max_column)].width = 36.3
         sheet.row_dimensions[i+2].height = 380
         excel_image.height = 500
         # sheet.add_image(excel_image,anchor=f"{col}{row}")
-        sheet.add_image(excel_image, f"{get_column_letter(sheet.max_column)}2")
+        sheet.add_image(excel_image, f"{get_column_letter(sheet.max_column)}{i+2}")
         # print(type(data_curve_img_cropped))
 
     # 保存工作簿
