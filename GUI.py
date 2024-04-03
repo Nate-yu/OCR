@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import subprocess
+from extract import main
 
 def select_folder():
     folder_path = filedialog.askdirectory()
@@ -12,7 +13,8 @@ def process_folder():
     folder_path = entry_path.get()
     if folder_path:
         try:
-            subprocess.run(["python", "extract.py", folder_path])
+            # subprocess.run(["python", "extract.py", folder_path])
+            main(folder_path)
             tk.messagebox.showinfo("Success", "PDF 文件夹处理完成！")
         except Exception as e:
             tk.messagebox.showerror("Error", f"处理出错：{e}")
