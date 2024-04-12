@@ -9,7 +9,6 @@ from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter, column_index_from_string
 import easyocr
 
-# pdf_folder_path = './pdf/'
 excel_template_path = 'template.xlsx'
 temp_img_path = "./temp_img/"
 
@@ -106,11 +105,7 @@ def crop_images(images):
 def ocr(person_info_img_cropped_list, test_data_img_cropped_list):
     # 用于存储两部分信息的列表
     person_info_list = []
-    test_data_list = []
     test_data_full_list = [] # 用于存储完整测试数据
-
-    # 储存前三个数字的坐标信息
-    coordinate_list = []
 
     for i, person_info_img_cropped in enumerate(person_info_img_cropped_list):
         reader = easyocr.Reader(['ch_sim', 'en'])
@@ -291,13 +286,11 @@ def text2excel(person_info_dict_list, data_matrix_list,test_data_info_list,data_
     # 填充数据曲线图到excel表格
     last_column = total_columns - 1 # 最后一列
     for i, data_curve_img_cropped in enumerate(data_curve_img_cropped_list, start=1):
-        """ sheet.column_dimensions[get_column_letter(sheet.max_column)].width = data_curve_img_cropped.width
-        sheet.row_dimensions[2].height = data_curve_img_cropped.height """
         excel_image = ExcelImage(f'./temp_img/data_curve_{i}_cropped.png')
-        sheet.column_dimensions[get_column_letter(sheet.max_column)].width = 40 # 修改最后一列的宽度
-        sheet.row_dimensions[i+1].height = 380
-        excel_image.height = 500 # 修改原图片高度
-        sheet.add_image(excel_image, f"{get_column_letter(sheet.max_column)}2")
+        sheet.column_dimensions[get_column_letter(last_column)].width = 40  # 不需要修改列宽，保持不变
+        sheet.row_dimensions[i + 1].height = 380  # 将图片添加到下一行
+        excel_image.height = 500  # 修改原图片高度
+        sheet.add_image(excel_image, f"{get_column_letter(total_columns)}{i + 1}")  # 将图片添加到同一列的下一行
 
     # 保存工作簿
     workbook.save('template.xlsx')
@@ -324,7 +317,7 @@ def process_folder():
     folder_path = entry_path.get()
     if folder_path:
         try:
-            # subprocess.run(["python", "extract.py", folder_path])
+            # subprocess.run(["python", "OCR.py", folder_path])
             main(folder_path)
             tk.messagebox.showinfo("Success", "PDF 文件夹处理完成！")
         except Exception as e:
