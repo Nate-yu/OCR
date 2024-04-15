@@ -106,14 +106,13 @@ def ocr(person_info_img_cropped_list, test_data_img_cropped_list):
     # 用于存储两部分信息的列表
     person_info_list = []
     test_data_full_list = [] # 用于存储完整测试数据
+    reader = easyocr.Reader(['ch_sim', 'en'])
 
     for i, person_info_img_cropped in enumerate(person_info_img_cropped_list):
-        reader = easyocr.Reader(['ch_sim', 'en'])
         person_info = reader.readtext(f'./temp_img/person_info_{i + 1}_cropped.png', detail=0)
         person_info_list.append(person_info)
 
     for i, test_data_img_cropped in enumerate(test_data_img_cropped_list):
-        reader = easyocr.Reader(['ch_sim', 'en'])
         test_full_data = reader.readtext(f'./temp_img/test_data_{i + 1}_cropped.png')
         test_data = [item[1] for item in test_full_data]
         # 用于保存测试日期，测试时间以及检查结论
@@ -161,16 +160,6 @@ def extract_base_coordinate(data_list):
                     break
         base_coordinate_list.append(base_coordinate)
     return base_coordinate_list
-
-
-""" 判断字符串是否为小数 """
-def is_float(s):
-    try:
-        float(s)
-        if not s.isdigit():
-            return True
-    except ValueError:
-        return False
 
 """ 
     预处理ocr识别出来的信息
@@ -295,6 +284,18 @@ def text2excel(person_info_dict_list, data_matrix_list,test_data_info_list,data_
     # 保存工作簿
     workbook.save('template.xlsx')
 
+""" 删除临时文件夹内的所有文件 """
+def cleanup_temp_files(temp_folder_path):
+    for filename in os.listdir(temp_folder_path):
+        file_path = os.path.join(temp_folder_path, filename)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            # 如果要删除子文件夹内的文件，可以使用递归
+            # elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
 
 def main(pdf_folder_path):
     images = []
@@ -304,6 +305,7 @@ def main(pdf_folder_path):
     base_coordinate_list = extract_base_coordinate(test_full_data_list) # 提取前三个数字坐标的第一个数据，用作后续数据的定位
     person_info_dict_list, data_matrix_list = preprocess_text(person_info_list, test_full_data_list, base_coordinate_list)
     text2excel(person_info_dict_list, data_matrix_list,test_data_info_list, data_curve_img_cropped_list)
+    cleanup_temp_files(temp_img_path)
 
 import tkinter as tk
 from tkinter import filedialog
