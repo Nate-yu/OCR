@@ -107,14 +107,13 @@ def ocr(person_info_img_cropped_list, test_data_img_cropped_list):
     # 用于存储两部分信息的列表
     person_info_list = []
     test_data_full_list = [] # 用于存储完整测试数据
+    reader = easyocr.Reader(['ch_sim', 'en'])
 
     for i, person_info_img_cropped in enumerate(person_info_img_cropped_list):
-        reader = easyocr.Reader(['ch_sim', 'en'])
         person_info = reader.readtext(f'./temp_img/person_info_{i + 1}_cropped.png', detail=0)
         person_info_list.append(person_info)
 
     for i, test_data_img_cropped in enumerate(test_data_img_cropped_list):
-        reader = easyocr.Reader(['ch_sim', 'en'])
         test_full_data = reader.readtext(f'./temp_img/test_data_{i + 1}_cropped.png')
         test_data = [item[1] for item in test_full_data]
         # 用于保存测试日期，测试时间以及检查结论
