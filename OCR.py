@@ -330,7 +330,14 @@ def process_folder():
 if __name__ == '__main__':
     # 创建主窗口
     root = tk.Tk()
-    root.title("PDF 文件夹处理工具")
+    root.title("PDF 识别工具")
+    window_width = 600
+    window_height = 400
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x_coordinate = (screen_width - window_width) // 2
+    y_coordinate = (screen_height - window_height) // 2
+    root.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
 
     # 添加按钮用于选择文件夹
     btn_browse = tk.Button(root, text="选择文件夹", command=select_folder)
